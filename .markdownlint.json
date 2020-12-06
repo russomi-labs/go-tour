@@ -1,7 +1,7 @@
 {
     "default": false,
     "ul-style": {
-        "style": "sublist"
+        "style": "dash"
     },
     "no-duplicate-heading": {
         "allow_different_nesting": true
