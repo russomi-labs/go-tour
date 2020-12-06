@@ -1,24 +1,20 @@
-# Foobar
+# Welcome to a tour of Go
 
-Foobar is a Python library for dealing with word pluralization.
+## Basics
 
-## Installation
+The starting point, learn all the basics of the language.
 
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install foobar.
+Declaring variables, calling functions, and all the things you need to know before moving to the next lessons.
 
-``` bash
-pip install foobar
-```
+## Methods and interfaces
 
-## Usage
+Learn how to define methods on types, how to declare interfaces, and how to put everything together.
 
-``` python
-import foobar
+## Concurrency
 
-foobar.pluralize('word') # returns 'words'
-foobar.pluralize('goose') # returns 'geese'
-foobar.singularize('phenomena') # returns 'phenomenon'
-```
+Go provides concurrency features as part of the core language.
+
+This module goes over `goroutines` and `channels`, and how they are used to implement different concurrency patterns.
 
 ## Contributing
 
