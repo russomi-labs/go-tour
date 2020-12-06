@@ -17,16 +17,16 @@ Learn the basic components of any Go program.
   - It is good style to use the factored import statement.
 
 ``` Go
-    package main
+package main
 
-    import (
-        "fmt"
-        "math"
-    )
+import (
+    "fmt"
+    "math"
+)
 
-    func main() {
-        fmt.Printf("Now you have %g problems.\n", math.Sqrt(7))
-    }
+func main() {
+    fmt.Printf("Now you have %g problems.\n", math.Sqrt(7))
+}
 ```
 
 - Exported names
@@ -42,9 +42,9 @@ Learn the basic components of any Go program.
   - When two or more consecutive named function parameters share a type, you can omit the type from all but the last.
 
 ``` Go
-    func add(x, y int) int {
-        return x + y
-    }
+func add(x, y int) int {
+    return x + y
+}
 ```
 
 - Multiple Results
@@ -52,18 +52,18 @@ Learn the basic components of any Go program.
   - The swap function returns two strings.
 
 ``` Go
-    package main
+package main
 
-    import "fmt"
+import "fmt"
 
-    func swap(x, y string) (string, string) {
-        return y, x
-    }
+func swap(x, y string) (string, string) {
+    return y, x
+}
 
-    func main() {
-        a, b := swap("hello", "world")
-        fmt.Println(a, b)
-    }
+func main() {
+    a, b := swap("hello", "world")
+    fmt.Println(a, b)
+}
 ```
 
 - Named return values
@@ -72,19 +72,19 @@ Learn the basic components of any Go program.
   - Naked return statements should be used only in short functions, as with the example shown here. They can harm readability in longer functions.
 
 ``` Go
-    package main
+package main
 
-    import "fmt"
+import "fmt"
 
-    func split(sum int) (x, y int) {
-        x = sum * 4 / 9
-        y = sum - x
-        return
-    }
+func split(sum int) (x, y int) {
+    x = sum * 4 / 9
+    y = sum - x
+    return
+}
 
-    func main() {
-        fmt.Println(split(17))
-    }
+func main() {
+    fmt.Println(split(17))
+}
 ```
 
 - Variables
@@ -92,16 +92,16 @@ Learn the basic components of any Go program.
   - A var statement can be at package or function level. We see both in this example.
 
 ``` Go
-    package main
+package main
 
-    import "fmt"
+import "fmt"
 
-    var c, python, java bool
+var c, python, java bool
 
-    func main() {
-        var i int
-        fmt.Println(i, c, python, java)
-    }
+func main() {
+    var i int
+    fmt.Println(i, c, python, java)
+}
 ```
 
 - Variables with initializers
@@ -109,16 +109,16 @@ Learn the basic components of any Go program.
   - If an initializer is present, the type can be omitted; the variable will take the type of the initializer.
 
 ``` Go
-    package main
+package main
 
-    import "fmt"
+import "fmt"
 
-    var i, j int = 1, 2
+var i, j int = 1, 2
 
-    func main() {
-        var c, python, java = true, false, "no!"
-        fmt.Println(i, j, c, python, java)
-    }
+func main() {
+    var c, python, java = true, false, "no!"
+    fmt.Println(i, j, c, python, java)
+}
 ```
 
 - Short variable declarations
@@ -126,38 +126,38 @@ Learn the basic components of any Go program.
   - Outside a function, every statement begins with a keyword (var, func, and so on) and so the := construct is not available.
 
 ``` Go
-    package main
+package main
 
-    import "fmt"
+import "fmt"
 
-    func main() {
-        var i, j int = 1, 2
-        k := 3
-        c, python, java := true, false, "no!"
+func main() {
+    var i, j int = 1, 2
+    k := 3
+    c, python, java := true, false, "no!"
 
-        fmt.Println(i, j, k, c, python, java)
-    }
+    fmt.Println(i, j, k, c, python, java)
+}
 ```
 
 - Basic types
   - Go's basic types are
 
 ``` Go
-    bool
+bool
 
-    string
+string
 
-    int  int8  int16  int32  int64
-    uint uint8 uint16 uint32 uint64 uintptr
+int  int8  int16  int32  int64
+uint uint8 uint16 uint32 uint64 uintptr
 
-    byte // alias for uint8
+byte // alias for uint8
 
-    rune // alias for int32
-        // represents a Unicode code point
+rune // alias for int32
+    // represents a Unicode code point
 
-    float32 float64
+float32 float64
 
-    complex64 complex128
+complex64 complex128
 ```
 
   - The example shows variables of several types, and also that variable declarations may be "factored" into blocks, as with import statements.
@@ -172,17 +172,17 @@ Learn the basic components of any Go program.
     - "" (the empty string) for strings.
 
 ``` Go
-    package main
+package main
 
-    import "fmt"
+import "fmt"
 
-    func main() {
-        var i int
-        var f float64
-        var b bool
-        var s string
-        fmt.Printf("%v %v %v %q\n", i, f, b, s)
-    }
+func main() {
+    var i int
+    var f float64
+    var b bool
+    var s string
+    fmt.Printf("%v %v %v %q\n", i, f, b, s)
+}
 ```
 
 - Type conversions
@@ -190,17 +190,17 @@ Learn the basic components of any Go program.
   - Some numeric conversions:
 
 ``` Go
-    var i int = 42
-    var f float64 = float64(i)
-    var u uint = uint(f)
+var i int = 42
+var f float64 = float64(i)
+var u uint = uint(f)
 ```
 
   - Or, put more simply:
 
 ``` Go
-    i := 42
-    f := float64(i)
-    u := uint(f)
+i := 42
+f := float64(i)
+u := uint(f)
 ```
 
 - Type inference
@@ -208,16 +208,16 @@ Learn the basic components of any Go program.
   - When the right hand side of the declaration is typed, the new variable is of that same type:
 
 ``` Go
-    var i int
-    j := i // j is an int
+var i int
+j := i // j is an int
 ```
 
   - But when the right hand side contains an untyped numeric constant, the new variable may be an `int` , `float64` , or `complex128` depending on the precision of the constant:
 
 ``` Go
-    i := 42           // int
-    f := 3.142        // float64
-    g := 0.867 + 0.5i // complex128
+i := 42           // int
+f := 3.142        // float64
+g := 0.867 + 0.5i // complex128
 ```
 
 - Constants
@@ -226,20 +226,20 @@ Learn the basic components of any Go program.
   - Constants cannot be declared using the := syntax.
 
 ``` Go
-    package main
+package main
 
-    import "fmt"
+import "fmt"
 
-    const Pi = 3.14
+const Pi = 3.14
 
-    func main() {
-        const World = "世界"
-        fmt.Println("Hello", World)
-        fmt.Println("Happy", Pi, "Day")
+func main() {
+    const World = "世界"
+    fmt.Println("Hello", World)
+    fmt.Println("Happy", Pi, "Day")
 
-        const Truth = true
-        fmt.Println("Go rules?", Truth)
-    }
+    const Truth = true
+    fmt.Println("Go rules?", Truth)
+}
 ```
 
 - Numeric Constants
