@@ -6,7 +6,7 @@ The starting point, learn all the basics of the language.
 
 Declaring variables, calling functions, and all the things you need to know before moving to the next lessons.
 
-### [Packages, variables, and functions](https://tour.golang.org/basics)
+a### [Packages, variables, and functions](https://tour.golang.org/basics)
 
 Learn the basic components of any Go program.
 
@@ -251,10 +251,6 @@ func main() {
 ### [Flow control statements: for, if, else, switch and defer](https://tour.golang.org/flowcontrol)
 
 Learn how to control the flow of your code with conditionals, loops, switches and defers.
-
-### [More types: structs, slices, and maps](https://tour.golang.org/moretypes)
-
-Learn how to define types based on existing ones: this lesson covers structs, arrays, slices, and maps.
 
 - For
   - Go has only one looping construct, the `for` loop.
@@ -506,6 +502,10 @@ func main() {
 	fmt.Println("done")
 }
 ```
+
+### [More types: structs, slices, and maps](https://tour.golang.org/moretypes)
+
+Learn how to define types based on existing ones: this lesson covers structs, arrays, slices, and maps.
 
 ## Methods and interfaces
 
