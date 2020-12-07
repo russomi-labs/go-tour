@@ -914,6 +914,265 @@ func main() {
 }
 ```
 
+- Appending to a slice
+  - It is common to append new elements to a slice, and so Go provides a built-in `append` function. The documentation of the built-in package describes `append` .
+
+``` Go
+func append(s []T, vs ...T) []T
+
+```
+
+  - The first parameter `s` of append is a slice of type `T` , and the rest are `T` values to append to the slice.
+  - The resulting value of `append` is a slice containing all the elements of the original slice plus the provided values.
+  - If the backing array of `s` is too small to fit all the given values a bigger array will be allocated. The returned slice will point to the newly allocated array.
+  - [Slices: usage and internals](https://blog.golang.org/go-slices-usage-and-internals)
+
+``` Go
+package main
+
+import "fmt"
+
+func main() {
+	var s []int
+	printSlice(s)
+
+	// append works on nil slices.
+	s = append(s, 0)
+	printSlice(s)
+
+	// The slice grows as needed.
+	s = append(s, 1)
+	printSlice(s)
+
+	// We can add more than one element at a time.
+	s = append(s, 2, 3, 4)
+	printSlice(s)
+}
+
+func printSlice(s []int) {
+	fmt.Printf("len=%d cap=%d %v\n", len(s), cap(s), s)
+}
+
+```
+
+- Range
+  - The `range` form of the `for` loop iterates over a slice or map.
+  - When ranging over a slice, two values are returned for each iteration. The first is the index, and the second is a copy of the element at that index.
+
+``` Go
+package main
+
+import "fmt"
+
+var pow = []int{1, 2, 4, 8, 16, 32, 64, 128}
+
+func main() {
+	for i, v := range pow {
+		fmt.Printf("2**%d = %d\n", i, v)
+	}
+}
+
+```
+
+- Range continued
+  - You can skip the index or value by assigning to `_` .
+
+``` Go
+for i, _ := range pow
+for _, value := range pow
+
+```
+
+  - If you only want the index, you can omit the second variable.
+
+``` Go
+for i := range pow
+```
+
+``` Go
+package main
+
+import "fmt"
+
+func main() {
+	pow := make([]int, 10)
+	for i := range pow {
+		pow[i] = 1 << uint(i) // == 2**i
+	}
+	for _, value := range pow {
+		fmt.Printf("%d\n", value)
+	}
+}
+
+```
+
+- Maps
+  - A `map` maps keys to values.
+  - The zero value of a `map` is `nil` . A `nil`  `map` has no keys, nor can keys be added.
+  - The make function returns a map of the given type, initialized and ready for use.
+
+``` Go
+package main
+
+import "fmt"
+
+type Vertex struct {
+	Lat, Long float64
+}
+
+var m map[string]Vertex
+
+func main() {
+	m = make(map[string]Vertex)
+	m["Bell Labs"] = Vertex{
+		40.68433, -74.39967,
+	}
+	fmt.Println(m["Bell Labs"])
+}
+
+```
+
+- Map literals
+  - Map literals are like struct literals, but the keys are required.
+
+``` Go
+package main
+
+import "fmt"
+
+type Vertex struct {
+	Lat, Long float64
+}
+
+var m = map[string]Vertex{
+	"Bell Labs": Vertex{
+		40.68433, -74.39967,
+	},
+	"Google": Vertex{
+		37.42202, -122.08408,
+	},
+}
+
+func main() {
+	fmt.Println(m)
+}
+
+```
+
+- Map literals continued
+  - If the top-level type is just a type name, you can omit it from the elements of the literal.
+
+``` Go
+package main
+
+import "fmt"
+
+type Vertex struct {
+	Lat, Long float64
+}
+
+var m = map[string]Vertex{
+	"Bell Labs": {40.68433, -74.39967},
+	"Google":    {37.42202, -122.08408},
+}
+
+func main() {
+	fmt.Println(m)
+}
+```
+
+- Mutating Maps
+  - Insert or update an element in map m:
+
+``` Go
+m[key] = elem
+```
+
+  - Retrieve an element:
+
+``` Go
+elem = m[key]
+```
+
+  - Delete an element:
+
+``` Go
+delete(m, key)
+```
+
+  - Test that a key is present with a two-value assignment:
+
+``` Go
+elem, ok = m[key]
+```
+
+- If key is in m, ok is true. If not, ok is false.
+
+- If key is not in the `map` , then elem is the zero value for the `map's` element type.
+
+Note: If `elem` or `ok` have not yet been declared you could use a short declaration form:
+
+``` Go
+elem, ok := m[key]
+```
+
+- Function values
+- Functions are values too. They can be passed around just like other values.
+- Function values may be used as function arguments and return values.
+
+``` Go
+package main
+
+import (
+	"fmt"
+	"math"
+)
+
+func compute(fn func(float64, float64) float64) float64 {
+	return fn(3, 4)
+}
+
+func main() {
+	hypot := func(x, y float64) float64 {
+		return math.Sqrt(x*x + y*y)
+	}
+	fmt.Println(hypot(5, 12))
+
+	fmt.Println(compute(hypot))
+	fmt.Println(compute(math.Pow))
+}
+
+```
+
+- Function closures
+  - Go functions may be closures. A closure is a function value that references variables from outside its body. The function may access and assign to the referenced variables; in this sense the function is "bound" to the variables.
+  - For example, the `adder` function returns a closure. Each closure is bound to its own sum variable.
+
+``` Go
+package main
+
+import "fmt"
+
+func adder() func(int) int {
+	sum := 0
+	return func(x int) int {
+		sum += x
+		return sum
+	}
+}
+
+func main() {
+	pos, neg := adder(), adder()
+	for i := 0; i < 10; i++ {
+		fmt.Println(
+			pos(i),
+			neg(-2*i),
+		)
+	}
+}
+
+```
+
 ## Methods and interfaces
 
 Learn how to define methods on types, how to declare interfaces, and how to put everything together.
