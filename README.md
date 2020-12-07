@@ -528,6 +528,7 @@ This module goes over `goroutines` and `channels` , and how they are used to imp
 ## Resources
 
 - [Go's Declaration Syntax](https://blog.golang.org/declaration-syntax) - Go's declarations read left to right.
+- [Defer, Panic, and Recover](https://blog.golang.org/defer-panic-and-recover) - Go has the usual mechanisms for control flow: if, for, switch, goto. It also has the go statement to run code in a separate goroutine. Here I'd like to discuss some of the less common ones: defer, panic, and recover.
 
 ## Contributing
 
