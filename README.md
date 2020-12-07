@@ -1181,6 +1181,66 @@ Learn how to define methods on types, how to declare interfaces, and how to put 
 
 This lesson covers methods and interfaces, the constructs that define objects and their behavior.
 
+- Methods
+  - Go does not have classes. However, you can define methods on types.
+  - A method is a function with a special receiver argument.
+  - The receiver appears in its own argument list between the `func` keyword and the method name.
+  - In this example, the `Abs` method has a receiver of type `Vertex` named `v` .
+
+``` Go
+package main
+
+import (
+	"fmt"
+	"math"
+)
+
+type Vertex struct {
+	X, Y float64
+}
+
+func (v Vertex) Abs() float64 {
+	return math.Sqrt(v.X*v.X + v.Y*v.Y)
+}
+
+func main() {
+	v := Vertex{3, 4}
+	fmt.Println(v.Abs())
+}
+
+```
+
+- Methods are functions
+  - Remember: a `method` is just a `function` with a receiver argument.
+  - Here's `Abs` written as a regular function with no change in functionality.
+
+``` Go
+package main
+
+import (
+	"fmt"
+	"math"
+)
+
+type Vertex struct {
+	X, Y float64
+}
+
+func Abs(v Vertex) float64 {
+	return math.Sqrt(v.X*v.X + v.Y*v.Y)
+}
+
+func main() {
+	v := Vertex{3, 4}
+	fmt.Println(Abs(v))
+}
+
+```
+
+
+
+
+
 ## Concurrency
 
 Go provides concurrency features as part of the core language.
