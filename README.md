@@ -50,12 +50,15 @@
       - [Appending to a slice](#appending-to-a-slice)
       - [Range](#range)
       - [Range continued](#range-continued)
+      - [Exercise: Slices](#exercise-slices)
       - [Maps](#maps)
       - [Map literals](#map-literals)
       - [Map literals continued](#map-literals-continued)
       - [Mutating Maps](#mutating-maps)
+      - [Exercise: Maps](#exercise-maps)
       - [Function values](#function-values)
       - [Function closures](#function-closures)
+      - [Exercise: Fibonacci closure](#exercise-fibonacci-closure)
   - [Methods and interfaces](#methods-and-interfaces)
     - [Methods and interfaces](#methods-and-interfaces-1)
       - [Methods](#methods)
@@ -75,9 +78,13 @@
       - [Type assertions](#type-assertions)
       - [Type switches](#type-switches)
       - [Stringers](#stringers)
+      - [Exercise: Stringers](#exercise-stringers)
       - [Errors](#errors)
       - [Readers](#readers)
+      - [Exercise: Readers](#exercise-readers)
+      - [Exercise: rot13Reader](#exercise-rot13reader)
       - [Images](#images)
+      - [Exercise: Images](#exercise-images)
   - [Concurrency](#concurrency)
     - [Concurrency](#concurrency-1)
       - [Goroutines](#goroutines)
@@ -86,7 +93,9 @@
       - [Range and Close](#range-and-close)
       - [Select](#select)
       - [Default Selection](#default-selection)
+      - [Exercise: Equivalent Binary Trees](#exercise-equivalent-binary-trees)
       - [sync. Mutex](#sync-mutex)
+      - [Exercise: Web Crawler](#exercise-web-crawler)
   - [Where to Go from here](#where-to-go-from-here)
   - [Resources](#resources)
   - [Contributing](#contributing)
@@ -1311,6 +1320,57 @@ func main() {
 
 ```
 
+#### Exercise: Slices
+
+Implement `Pic` . It should return a slice of length `dy` , each element of which is a slice of `dx` 8-bit unsigned integers. When you run the program, it will display your picture, interpreting the integers as grayscale (well, bluescale) values.
+
+The choice of image is up to you. Interesting functions include `(x+y)/2` , `x*y` , and `x^y` .
+
+(You need to use a loop to allocate each `[]uint8` inside the `[][]uint8` .)
+
+(Use `uint8(intValue)` to convert between types.)
+
+``` Go
+package main
+
+import "golang.org/x/tour/pic"
+
+func Pic(dx, dy int) [][]uint8 {
+}
+
+func main() {
+	pic.Show(Pic)
+}
+```
+
+``` Go
+package main
+
+import "golang.org/x/tour/pic"
+
+func Pic(dx, dy int) [][]uint8 {
+
+	// initialize the image
+	image := make([][]uint8, dy)
+
+	// iterate over each pixel
+	for x := 0; x < dy; x++ {
+		image[x] = make([]uint8, dx)
+		for y := 0; y < dx; y++ {
+
+			// set a color value for each pixel
+			image[x][y] = uint8((x ^ y) * (x ^ y))
+
+		}
+	}
+	return image
+}
+
+func main() {
+	pic.Show(Pic)
+}
+```
+
 #### Maps
 
 A `map` maps keys to values.
@@ -1427,6 +1487,59 @@ Note: If `elem` or `ok` have not yet been declared you could use a short declara
 elem, ok := m[key]
 ```
 
+#### Exercise: Maps
+
+Implement WordCount. It should return a map of the counts of each "word" in the string s. The `wc.Test` function runs a test suite against the provided function and prints success or failure.
+
+You might find `strings.Fields` helpful.
+
+``` Go
+package main
+
+import (
+	"golang.org/x/tour/wc"
+)
+
+func WordCount(s string) map[string]int {
+	return map[string]int{"x": 1}
+}
+
+func main() {
+	wc.Test(WordCount)
+}
+```
+
+Solution
+
+``` Go
+package main
+
+import (
+    "golang.org/p/go-tour/wc"
+    "strings"
+)
+
+func WordCount(s string) map[string]int {
+
+    // initialize the wordMap variable
+    wordMap := make(map[string]int)
+
+    // separate the strings into words
+    words := strings.Fields(s)
+
+    // iterate over the words to count each instance
+    for _, word := range words {
+        wordMap[word]++
+    }
+
+    return wordMap
+}
+
+func main() {
+    wc.Test(WordCount)
+}
+```
+
 #### Function values
 
 Functions are values too. They can be passed around just like other values.
@@ -1488,6 +1601,56 @@ func main() {
 	}
 }
 
+```
+
+#### Exercise: Fibonacci closure
+
+Let's have some fun with functions.
+
+Implement a fibonacci function that returns a function (a closure) that returns successive fibonacci numbers (0, 1, 1, 2, 3, 5, ...).
+
+``` Go
+package main
+
+import "fmt"
+
+// fibonacci is a function that returns
+// a function that returns an int.
+func fibonacci() func() int {
+}
+
+func main() {
+	f := fibonacci()
+	for i := 0; i < 10; i++ {
+		fmt.Println(f())
+	}
+}
+
+```
+
+Solution
+
+``` Go
+package main
+
+import "fmt"
+
+// fibonacci is a function that returns
+// a function that returns an int.
+func fibonacci() func() int {
+    first, second := 0, 1
+    return func() int {
+        first, second = second, first + second
+        return first
+    }
+}
+
+func main() {
+    f := fibonacci()
+    for i := 0; i < 10; i++ {
+        fmt.Println(f())
+    }
+}
 ```
 
 ## Methods and interfaces
@@ -2203,6 +2366,54 @@ func main() {
 
 ```
 
+#### Exercise: Stringers
+
+Make the IPAddr type implement fmt. Stringer to print the address as a dotted quad.
+
+For instance, IPAddr{1, 2, 3, 4} should print as "1.2.3.4".
+
+``` Go
+package main
+
+import "fmt"
+
+type IPAddr [4]byte
+
+// TODO: Add a "String() string" method to IPAddr.
+
+func main() {
+	hosts := map[string]IPAddr{
+		"loopback":  {127, 0, 0, 1},
+		"googleDNS": {8, 8, 8, 8},
+	}
+	for name, ip := range hosts {
+		fmt.Printf("%v: %v\n", name, ip)
+	}
+}
+
+```
+
+Solution
+
+``` Go
+package main
+import "fmt"
+type IPAddr [4]byte
+// if we implement this , this will get called when printing //IPAddr
+func (ip IPAddr) String() string{
+  return fmt.Sprintf("%v.%v.%v.%v",ip[0],ip[1],ip[2],ip[3])
+}
+func main() {
+ hosts := map[string]IPAddr{
+  "loopback":  {127, 0, 0, 1},
+  "googleDNS": {8, 8, 8, 8},
+ }
+ for name, ip := range hosts {
+  fmt.Printf("%v: %v\n", name, ip)
+ }
+}
+```
+
 #### Errors
 
 Go programs express `error` state with error values.
@@ -2305,6 +2516,120 @@ func main() {
 
 ```
 
+#### Exercise: Readers
+
+Implement a Reader type that emits an infinite stream of the ASCII character 'A'.
+
+``` Go
+package main
+
+import "golang.org/x/tour/reader"
+
+type MyReader struct{}
+
+// TODO: Add a Read([]byte) (int, error) method to MyReader.
+
+func main() {
+	reader.Validate(MyReader{})
+}
+
+```
+
+Solution
+
+``` Go
+package main
+
+import "golang.org/x/tour/reader"
+
+type MyReader struct{}
+
+func (r MyReader) Read(b []byte) (int, error) {
+	for i := range b {
+		b[i] = 'A'
+	}
+	return len(b), nil
+}
+
+func main() {
+	reader.Validate(MyReader{})
+}
+```
+
+#### Exercise: rot13Reader
+
+A common pattern is an `io.Reader` that wraps another `io.Reader` , modifying the stream in some way.
+
+For example, the `gzip.NewReader` function takes an `io.Reader` (a stream of compressed data) and returns a `*gzip.Reader` that also implements `io.Reader` (a stream of the decompressed data).
+
+Implement a `rot13Reader` that implements `io.Reader` and reads from an `io.Reader` , modifying the stream by applying the `rot13` substitution cipher to all alphabetical characters.
+
+The `rot13Reader` type is provided for you. Make it an `io.Reader` by implementing its `Read` method.
+
+``` Go
+package main
+
+import (
+	"io"
+	"os"
+	"strings"
+)
+
+type rot13Reader struct {
+	r io.Reader
+}
+
+func main() {
+	s := strings.NewReader("Lbh penpxrq gur pbqr!")
+	r := rot13Reader{s}
+	io.Copy(os.Stdout, &r)
+}
+```
+
+Solution
+
+``` Go
+package main
+
+import (
+	"io"
+	"os"
+	"strings"
+)
+
+func rot13(b byte) byte {
+	var a, z byte
+	switch {
+	case 'a' <= b && b <= 'z':
+		a, z = 'a', 'z'
+	case 'A' <= b && b <= 'Z':
+		a, z = 'A', 'Z'
+	default:
+		return b
+	}
+	return (b-a+13)%(z-a+1) + a
+}
+
+type rot13Reader struct {
+	r io.Reader
+}
+
+func (r rot13Reader) Read(p []byte) (n int, err error) {
+	n, err = r.r.Read(p)
+	for i := 0; i < n; i++ {
+		p[i] = rot13(p[i])
+	}
+	return
+}
+
+func main() {
+	s := strings.NewReader(
+		"Lbh penpxrq gur pbqr!")
+	r := rot13Reader{s}
+	io.Copy(os.Stdout, &r)
+}
+```
+
 #### Images
 
 [Package image](https://golang.org/pkg/image/#Image) defines the Image interface:
@@ -2339,6 +2664,66 @@ func main() {
 	fmt.Println(m.At(0, 0).RGBA())
 }
 
+```
+
+#### Exercise: Images
+
+Remember the [picture generator](https://tour.golang.org/moretypes/18) you wrote earlier? Let's write another one, but this time it will return an implementation of `image.Image` instead of a slice of data.
+
+Define your own `Image` type, [implement the necessary methods](https://golang.org/pkg/image/#Image), and call `pic.ShowImage` .
+
+`Bounds` should return a `image.Rectangle` , like `image.Rect(0, 0, w, h)` .
+
+`ColorModel` should return `color.RGBAModel` .
+
+`At` should return a color; the value `v` in the last picture generator corresponds to `color.RGBA{v, v, 255, 255}` in this one.
+
+``` Go
+package main
+
+import "golang.org/x/tour/pic"
+
+type Image struct{}
+
+func main() {
+	m := Image{}
+	pic.ShowImage(m)
+}
+```
+
+Solution
+
+``` Go
+package main
+
+import (
+	"image"
+	"image/color"
+
+	"golang.org/x/tour/pic"
+)
+
+type Image struct {
+	Height, Width int
+}
+
+func (m Image) ColorModel() color.Model {
+	return color.RGBAModel
+}
+
+func (m Image) Bounds() image.Rectangle {
+	return image.Rect(0, 0, m.Height, m.Width)
+}
+
+func (m Image) At(x, y int) color.Color {
+	c := uint8(x ^ y)
+	return color.RGBA{c, c, 255, 255}
+}
+
+func main() {
+	m := Image{256, 256}
+	pic.ShowImage(m)
+}
 ```
 
 ## Concurrency
@@ -2584,6 +2969,132 @@ func main() {
 }
 ```
 
+#### Exercise: Equivalent Binary Trees
+
+There can be many different binary trees with the same sequence of values stored in it. For example, here are two binary trees storing the sequence 1, 1, 2, 3, 5, 8, 13.
+
+A function to check whether two binary trees store the same sequence is quite complex in most languages. We'll use Go's concurrency and channels to write a simple solution.
+
+This example uses the tree package, which defines the type:
+
+``` Go
+type Tree struct {
+    Left  *Tree
+    Value int
+    Right *Tree
+}
+```
+
+1. Implement the `Walk` function.
+
+2. Test the `Walk` function.
+
+The function `tree.New(k)` constructs a randomly-structured (but always sorted) binary tree holding the values `k, 2k, 3k, ..., 10k` .
+
+Create a new channel `ch` and kick off the walker:
+
+``` Go
+go Walk(tree.New(1), ch)
+```
+
+Then read and print 10 values from the channel. It should be the numbers 1, 2, 3, ..., 10.
+
+3. Implement the `Same` function using `Walk` to determine whether `t1` and `t2` store the same values.
+
+4. Test the `Same` function.
+
+`Same(tree.New(1), tree.New(1))` should return true, and `Same(tree.New(1), tree.New(2))` should return false.
+
+The documentation for Tree can be found [here](https://godoc.org/golang.org/x/tour/tree#Tree).
+
+``` Go
+package main
+
+import "golang.org/x/tour/tree"
+
+// Walk walks the tree t sending all values
+// from the tree to the channel ch.
+func Walk(t *tree.Tree, ch chan int)
+
+// Same determines whether the trees
+// t1 and t2 contain the same values.
+func Same(t1, t2 *tree.Tree) bool
+
+func main() {
+}
+```
+
+Solution
+
+``` Go
+package main
+
+import (
+	"fmt"
+
+	"golang.org/x/tour/tree"
+)
+
+func walkImpl(t *tree.Tree, ch, quit chan int) {
+	if t == nil {
+		return
+	}
+	walkImpl(t.Left, ch, quit)
+	select {
+	case ch <- t.Value:
+		// Value successfully sent.
+	case <-quit:
+		return
+	}
+	walkImpl(t.Right, ch, quit)
+}
+
+// Walk walks the tree t sending all values
+// from the tree to the channel ch.
+func Walk(t *tree.Tree, ch, quit chan int) {
+	walkImpl(t, ch, quit)
+	close(ch)
+}
+
+// Same determines whether the trees
+// t1 and t2 contain the same values.
+func Same(t1, t2 *tree.Tree) bool {
+	w1, w2 := make(chan int), make(chan int)
+	quit := make(chan int)
+	defer close(quit)
+
+	go Walk(t1, w1, quit)
+	go Walk(t2, w2, quit)
+
+	for {
+		v1, ok1 := <-w1
+		v2, ok2 := <-w2
+		if !ok1 || !ok2 {
+			return ok1 == ok2
+		}
+		if v1 != v2 {
+			return false
+		}
+	}
+}
+
+func main() {
+	fmt.Print("tree.New(1) == tree.New(1): ")
+	if Same(tree.New(1), tree.New(1)) {
+		fmt.Println("PASSED")
+	} else {
+		fmt.Println("FAILED")
+	}
+
+	fmt.Print("tree.New(1) != tree.New(2): ")
+	if !Same(tree.New(1), tree.New(2)) {
+		fmt.Println("PASSED")
+	} else {
+		fmt.Println("FAILED")
+	}
+}
+```
+
 #### sync. Mutex
 
 We've seen how channels are great for communication among goroutines.
@@ -2642,6 +3153,238 @@ func main() {
 
 	time.Sleep(time.Second)
 	fmt.Println(c.Value("somekey"))
+}
+```
+
+#### Exercise: Web Crawler
+
+In this exercise you'll use Go's concurrency features to parallelize a web crawler.
+
+Modify the `Crawl` function to fetch URLs in parallel without fetching the same URL twice.
+
+Hint: you can keep a cache of the URLs that have been fetched on a map, but maps alone are not safe for concurrent use!
+
+``` Go
+package main
+
+import (
+	"fmt"
+)
+
+type Fetcher interface {
+	// Fetch returns the body of URL and
+	// a slice of URLs found on that page.
+	Fetch(url string) (body string, urls []string, err error)
+}
+
+// Crawl uses fetcher to recursively crawl
+// pages starting with url, to a maximum of depth.
+func Crawl(url string, depth int, fetcher Fetcher) {
+	// TODO: Fetch URLs in parallel.
+	// TODO: Don't fetch the same URL twice.
+	// This implementation doesn't do either:
+	if depth <= 0 {
+		return
+	}
+	body, urls, err := fetcher.Fetch(url)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Printf("found: %s %q\n", url, body)
+	for _, u := range urls {
+		Crawl(u, depth-1, fetcher)
+	}
+	return
+}
+
+func main() {
+	Crawl("https://golang.org/", 4, fetcher)
+}
+
+// fakeFetcher is Fetcher that returns canned results.
+type fakeFetcher map[string]*fakeResult
+
+type fakeResult struct {
+	body string
+	urls []string
+}
+
+func (f fakeFetcher) Fetch(url string) (string, []string, error) {
+	if res, ok := f[url]; ok {
+		return res.body, res.urls, nil
+	}
+	return "", nil, fmt.Errorf("not found: %s", url)
+}
+
+// fetcher is a populated fakeFetcher.
+var fetcher = fakeFetcher{
+	"https://golang.org/": &fakeResult{
+		"The Go Programming Language",
+		[]string{
+			"https://golang.org/pkg/",
+			"https://golang.org/cmd/",
+		},
+	},
+	"https://golang.org/pkg/": &fakeResult{
+		"Packages",
+		[]string{
+			"https://golang.org/",
+			"https://golang.org/cmd/",
+			"https://golang.org/pkg/fmt/",
+			"https://golang.org/pkg/os/",
+		},
+	},
+	"https://golang.org/pkg/fmt/": &fakeResult{
+		"Package fmt",
+		[]string{
+			"https://golang.org/",
+			"https://golang.org/pkg/",
+		},
+	},
+	"https://golang.org/pkg/os/": &fakeResult{
+		"Package os",
+		[]string{
+			"https://golang.org/",
+			"https://golang.org/pkg/",
+		},
+	},
+}
+```
+
+Solution
+
+``` Go
+package main
+
+import (
+	"errors"
+	"fmt"
+	"sync"
+)
+
+type Fetcher interface {
+	// Fetch returns the body of URL and
+	// a slice of URLs found on that page.
+	Fetch(url string) (body string, urls []string, err error)
+}
+
+// fetched tracks URLs that have been (or are being) fetched.
+// The lock must be held while reading from or writing to the map.
+// See https://golang.org/ref/spec#Struct_types section on embedded types.
+var fetched = struct {
+	m map[string]error
+	sync.Mutex
+}{m: make(map[string]error)}
+
+var loading = errors.New("url load in progress") // sentinel value
+
+// Crawl uses fetcher to recursively crawl
+// pages starting with url, to a maximum of depth.
+func Crawl(url string, depth int, fetcher Fetcher) {
+	if depth <= 0 {
+		fmt.Printf("<- Done with %v, depth 0.\n", url)
+		return
+	}
+
+	fetched.Lock()
+	if _, ok := fetched.m[url]; ok {
+		fetched.Unlock()
+		fmt.Printf("<- Done with %v, already fetched.\n", url)
+		return
+	}
+	// We mark the url to be loading to avoid others reloading it at the same time.
+	fetched.m[url] = loading
+	fetched.Unlock()
+
+	// We load it concurrently.
+	body, urls, err := fetcher.Fetch(url)
+
+	// And update the status in a synced zone.
+	fetched.Lock()
+	fetched.m[url] = err
+	fetched.Unlock()
+
+	if err != nil {
+		fmt.Printf("<- Error on %v: %v\n", url, err)
+		return
+	}
+	fmt.Printf("Found: %s %q\n", url, body)
+	done := make(chan bool)
+	for i, u := range urls {
+		fmt.Printf("-> Crawling child %v/%v of %v : %v.\n", i, len(urls), url, u)
+		go func(url string) {
+			Crawl(url, depth-1, fetcher)
+			done <- true
+		}(u)
+	}
+	for i, u := range urls {
+		fmt.Printf("<- [%v] %v/%v Waiting for child %v.\n", url, i, len(urls), u)
+		<-done
+	}
+	fmt.Printf("<- Done with %v\n", url)
+}
+
+func main() {
+	Crawl("https://golang.org/", 4, fetcher)
+
+	fmt.Println("Fetching stats\n--------------")
+	for url, err := range fetched.m {
+		if err != nil {
+			fmt.Printf("%v failed: %v\n", url, err)
+		} else {
+			fmt.Printf("%v was fetched\n", url)
+		}
+	}
+}
+
+// fakeFetcher is Fetcher that returns canned results.
+type fakeFetcher map[string]*fakeResult
+
+type fakeResult struct {
+	body string
+	urls []string
+}
+
+func (f *fakeFetcher) Fetch(url string) (string, []string, error) {
+	if res, ok := (*f)[url]; ok {
+		return res.body, res.urls, nil
+	}
+	return "", nil, fmt.Errorf("not found: %s", url)
+}
+
+// fetcher is a populated fakeFetcher.
+var fetcher = &fakeFetcher{
+	"https://golang.org/": &fakeResult{
+		"The Go Programming Language",
+		[]string{
+			"https://golang.org/pkg/",
+			"https://golang.org/cmd/",
+		},
+	},
+	"https://golang.org/pkg/": &fakeResult{
+		"Packages",
+		[]string{
+			"https://golang.org/",
+			"https://golang.org/cmd/",
+			"https://golang.org/pkg/fmt/",
+			"https://golang.org/pkg/os/",
+		},
+	},
+	"https://golang.org/pkg/fmt/": &fakeResult{
+		"Package fmt",
+		[]string{
+			"https://golang.org/",
+			"https://golang.org/pkg/",
+		},
+	},
+	"https://golang.org/pkg/os/": &fakeResult{
+		"Package os",
+		[]string{
+			"https://golang.org/",
+			"https://golang.org/pkg/",
+		},
+	},
 }
 ```
 
